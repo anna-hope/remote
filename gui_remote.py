@@ -33,6 +33,12 @@ class RemoteGUI:
     
         back_button = tk.Button(frame, text="back", command=self.go_back)
         back_button.pack(side='bottom')
+        
+        left_button = tk.Button(frame, text='left', command=self.go_left)
+        left_button.pack(side='left')
+        
+        right_button = tk.Button(frame, text='right', command=self.go_right)
+        right_button.pack(side='right')
     
     def go_forward(self):
         self.rem.send('f')
@@ -40,6 +46,14 @@ class RemoteGUI:
     
     def go_back(self):
         self.rem.send('b')
+        self.rem.send('0')
+        
+    def go_left(self):
+        self.rem.send('l')
+        self.rem.send('0')
+        
+    def go_right(self):
+        self.rem.send('r')
         self.rem.send('0')
 
 def main():
