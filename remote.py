@@ -11,7 +11,7 @@ class CustomError(Exception):
 class BadInputError(CustomError):
     pass
 
-class BTConnectionError(CustomError):
+class RemoteConnectionError(CustomError):
     pass
 
 class Remote(object):
@@ -19,7 +19,7 @@ class Remote(object):
         try:
             self.ser = serial.Serial(port, baudrate)
         except (FileNotFoundError, OSError, serial.serialutil.SerialException) as e:
-            raise BTConnectionError(e)
+            raise RemoteConnectionError(e)
     
     def send(self, data):
         '''Accepts either bytes or str'''

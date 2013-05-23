@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.3
 
-from remote import Remote, BTConnectionError
+from remote import Remote, RemoteConnectionError
 
 def main():
     print('Initialising...')
@@ -12,7 +12,7 @@ def main():
     while not connected:
         try:
             rem = Remote(port)
-        except BTConnectionError:
+        except RemoteConnectionError:
             print('\x1b[31;1mConnection on port {} unsuccessful\x1b[0m'.format(port))
             port = input('Please enter the right serial port: ')
             print('attempting another connection...')
