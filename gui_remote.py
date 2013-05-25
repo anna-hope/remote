@@ -6,35 +6,56 @@ from remote import Remote, RemoteConnectionError
 
 class RemoteGUI:
     
-    def __init__(self, master, port, debug=False):
-        self._get_port(master, port)
+    def __init__(self, master, debug=False):
+        
+        # get the screen size so we can calculate the offset
+        screenwidth = master.winfo_screenwidth()
+        screenheight = master.winfo_screenheight()
+        
+        # centre it
+        xoffset = round(screenwidth / 2)
+        yoffset = round(screenheight / 2)
+        
+        
+        # set the root window size
+        master.geometry('{width}x{height}+{xoffset}+{yoffset}'.format(width=200,
+         height=200, xoffset=xoffset,
+                     yoffset=yoffset))
+        
+        self._get_port(master)
     
-    def _get_port(self, master, port):
+    def _connect(self, port):
+        try:
+            self.rem = Remote(port)
+            return True
+        except RemoteConnectionError:
+            return False
+    
+    def _get_port(self, master):
         
-        def update_port():
-            try:
-                self.rem = Remote(entry.get())
-            except RemoteConnectionError:
-                error_frame.destroy()
-                self._get_port(master, port)
-            else:
-                error_frame.destroy()
+        def set_port():
+            port = entry.get()
+            if self._connect(port):
+                connect_frame.destroy()
                 self._draw_interface(master)
-            
-        error_frame = tk.Frame(master)
-        error_frame.pack()
+            else:
+                messagebox.showerror('Connection error', 
+                                    "Could not connect on '{}'".format(port))
+                
+        connect_frame = tk.Frame(master)
+        connect_frame.pack()
         
-        message = tk.Message(error_frame, width=100, text='Enter port',
+        message = tk.Message(connect_frame, width=100, text='Enter port',
                                             takefocus=True)
         message.pack()
         
-        entry = tk.Entry(error_frame)
+        entry = tk.Entry(connect_frame)
         entry.pack()
         
-        entry.insert(0, port)
+        entry.insert(0, 'port')
         
-        update_button = tk.Button(error_frame, text='update port', command=update_port)
-        update_button.pack()
+        connect_button = tk.Button(connect_frame, text='connect', command=set_port)
+        connect_button.pack()
     
     def _draw_interface(self, master):
         frame = tk.Frame(master)
@@ -54,13 +75,18 @@ class RemoteGUI:
     
         # bind keyboard keys to events
     
-        master.bind('Up', self.go_forward)
-        master.bind('Down', self.go_back)
-        master.bind('Left', self.go_left)
-        master.bind('Right', self.go_right)
+        master.bind('<Up>', self.go_forward)
+        master.bind('<Down>', self.go_back)
+        master.bind('<Left>', self.go_left)
+        master.bind('<Right>', self.go_right)
     
     def terminate_command(f):
-        def wrapper(self):
+        def wrapper(*args):
+            # when we use a keyboard key binding
+            # it also passes an Event object along
+            # so we want to ignore it without breaking things
+            
+            self = args[0]
             f(self)
             self.rem.send('0')
         return wrapper
@@ -86,8 +112,7 @@ def main():
     root = tk.Tk()
     root.title('Remote')
     
-    port = '/dev/tty.RN42-59F6-SPP'
-    app = RemoteGUI(root, port, True)
+    app = RemoteGUI(root, True)
     
     root.mainloop()
 
