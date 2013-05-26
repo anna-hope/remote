@@ -1,5 +1,7 @@
 #!/usr/bin/env python3.3
 
+# (c) Anton Osten 
+
 import tkinter as tk
 from tkinter import messagebox
 from remote import Remote, RemoteConnectionError
@@ -14,12 +16,12 @@ class RemoteGUI:
         
         # centre it
         xoffset = round(screenwidth / 2)
-        yoffset = round(screenheight / 2)
+        yoffset = round(screenheight / 3)
         
         
         # set the root window size
         master.geometry('{width}x{height}+{xoffset}+{yoffset}'.format(width=200,
-         height=200, xoffset=xoffset,
+         height=100, xoffset=xoffset,
                      yoffset=yoffset))
         
         self._get_port(master)
@@ -76,9 +78,16 @@ class RemoteGUI:
         # bind keyboard keys to events
     
         master.bind('<Up>', self.go_forward)
+        master.bind('w', self.go_forward)
+        
         master.bind('<Down>', self.go_back)
+        master.bind('s', self.go_back)
+        
         master.bind('<Left>', self.go_left)
+        master.bind('a', self.go_left)
+        
         master.bind('<Right>', self.go_right)
+        master.bind('d', self.go_right)
     
     def terminate_command(f):
         def wrapper(*args):
