@@ -27,9 +27,11 @@ class Remote(object):
         if not isinstance(data, (bytes, str)):
             raise BadInputError('Expected bytes or str')
         # if it's str, convert it to bytes
-        if type(data) is str:
-            data = bytes(data, 'ascii')
-        self.ser.write(data)
+        try:
+            self.ser.write(data)
+        except TypeError:
+            data = bytes(data, 'utf-8')
+            self.ser.write(data)
         return len(data)
     
     def receive(self, timeout=None):
