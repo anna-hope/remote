@@ -23,13 +23,13 @@ class Remote(object):
     
     def send(self, data):
         '''Accepts either bytes or str'''
-        # check if its bytes or str
+        # check if it's bytes or str
         if not isinstance(data, (bytes, str)):
             raise BadInputError('Expected bytes or str')
-        # if it's str, convert it to bytes
         try:
             self.ser.write(data)
         except TypeError:
+            # if it's str, convert it to bytes
             data = bytes(data, 'utf-8')
             self.ser.write(data)
         return len(data)
