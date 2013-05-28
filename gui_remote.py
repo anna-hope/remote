@@ -14,7 +14,7 @@ class RemoteGUI:
         screenwidth = master.winfo_screenwidth()
         screenheight = master.winfo_screenheight()
         
-        # centre it
+        # centre it (sort of)
         xoffset = round(screenwidth / 2)
         yoffset = round(screenheight / 3)
         
@@ -47,11 +47,10 @@ class RemoteGUI:
         connect_frame = tk.Frame(master)
         connect_frame.pack()
         
-        message = tk.Message(connect_frame, width=100, text='Enter port',
-                                            takefocus=True)
+        message = tk.Message(connect_frame, width=100, text='Enter port')
         message.pack()
         
-        entry = tk.Entry(connect_frame)
+        entry = tk.Entry(connect_frame, takefocus=True)
         entry.pack()
         
         entry.insert(0, 'port')
@@ -60,6 +59,9 @@ class RemoteGUI:
         connect_button.pack()
     
     def _draw_interface(self, master):
+        
+        master.geometry('{width}x{height}'.format(width=200, height=150))
+        
         frame = tk.Frame(master)
         frame.pack()
 
@@ -122,6 +124,9 @@ def main():
     root.title('Remote')
     
     app = RemoteGUI(root, True)
+    
+    # for OS X to display it on top
+    root.lift()
     
     root.mainloop()
 
